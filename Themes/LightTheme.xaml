@@ -1,0 +1,16 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Color x:Key="PrimaryBackground">White</Color>
+    <Color x:Key="PrimaryForeground">Black</Color>
+    <Color x:Key="MessageBackground">#E0E0E0</Color>
+
+    <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource PrimaryBackground}"/>
+    <SolidColorBrush x:Key="ForegroundBrush" Color="{StaticResource PrimaryForeground}"/>
+    <SolidColorBrush x:Key="MessageBackgroundBrush" Color="{StaticResource MessageBackground}"/>
+
+    <BitmapImage x:Key="UiModeImageIcon" UriSource="/Images/dark_mode.png" />
+    <BitmapImage x:Key="CloseIcon" UriSource="/Images/close.png" />
+    <BitmapImage x:Key="MinimizeIcon" UriSource="/Images/close_fullscreen.png" />
+    <BitmapImage x:Key="FullscreenIcon" UriSource="/Images/fullscreen.png" />
+</ResourceDictionary>

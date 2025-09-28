@@ -1,0 +1,435 @@
+﻿<Window x:Class="PeriodicTable.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Title="Periodic Table" Height="800" Width="1200">
+    <Grid Background="{DynamicResource BackgroundBrush}">
+        <!-- Define two rows: one for the table, one for the buttons -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <!-- Table Grid (Expands) -->
+            <RowDefinition Height="Auto"/>
+            <!-- Buttons (Only needed height) -->
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" Background="{DynamicResource BackgroundBrush}" MouseDown="TitleBar_MouseDown" Margin="0,10,5,0">
+            <StackPanel Height="24" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+                <StackPanel.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="OverridesDefaultStyle" Value="True"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Width" Value="60"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Grid>
+                                        <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <Border x:Name="HoverOverlay"
+                                                Background="{DynamicResource ForegroundBrush}"
+                                                Opacity="0"
+                                                CornerRadius="5"/>
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="HoverOverlay" Property="Opacity" Value="0.2"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </StackPanel.Resources>
+                <Button Click="Minimize_Click" Width="60" >
+                    <Image Height="24" Width="24" Source="{DynamicResource MinimizeIcon}"/>
+                    </Button>
+                <Button Click="Maximize_Click" Width="60">
+                    <Image Height="24" Width="24" Source="{DynamicResource FullscreenIcon}"/>
+                    </Button>
+                <Button Click="Close_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <Border x:Name="HoverOverlay"
+                                Background="Crimson"
+                                Opacity="0"
+                                CornerRadius="5"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="HoverOverlay" Property="Opacity" Value="0.3"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                        </Button.Template>
+                    <Image Height="24" Width="24" Source="{DynamicResource CloseIcon}"/>
+                    </Button>
+                </StackPanel>
+        </Border>
+
+
+        <Button x:Name="UiButton" 
+        BorderBrush="{DynamicResource BackgroundBrush}" 
+        Background="Transparent"
+        Click="UiModeHandler"
+        Grid.Row="1"
+        VerticalAlignment="Center"
+        HorizontalAlignment="Right"
+        Height="48"
+        Width="48"
+        Margin="0,0,20,0"
+        OverridesDefaultStyle="True">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border x:Name="HoverOverlay"
+                Background="{DynamicResource ForegroundBrush}"
+                Opacity="0"
+                CornerRadius="5"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="HoverOverlay" Property="Opacity" Value="0.2"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+            <Image x:Name="UiButtonImage" Source="{DynamicResource UiModeImageIcon}"/>
+        </Button>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+            <Label FontFamily="/Fonts/#Roboto" FontWeight="Bold" Content="Periodic Table" Foreground="{DynamicResource ForegroundBrush}" FontSize="32" />
+        </StackPanel>
+    <Grid Name="ElementGrid" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
+        <Grid.Resources>
+            <Style TargetType="Label">
+                <Setter Property="Width" Value="55"/>
+                <Setter Property="Height" Value="55"/>
+                    <Setter Property="FontFamily" Value="/Fonts/#Roboto"/>
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                    <Setter Property="FontSize" Value="22"/>
+                    <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                </Style>
+            <Style TargetType="TextBox">
+                <!-- Set Text Alignment -->
+                <Setter Property="TextAlignment" Value="Center"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Setter Property="FontFamily" Value="/Fonts/#Roboto"/>
+                    <Setter Property="FontWeight" Value="Medium"/>
+                    <Setter Property="MaxLength" Value="2" />
+                    <EventSetter Event="PreviewKeyDown" Handler="TextBox_PreviewKeyDown"/>
+                    <Setter Property="CaretBrush" Value="{DynamicResource ForegroundBrush}" />
+                    <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
+                    <Setter Property="Width" Value="55"/>
+                <Setter Property="Height" Value="55"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                                <Border x:Name="BorderElement" BorderThickness="1" BorderBrush="{DynamicResource ForegroundBrush}" CornerRadius="3">
+                                    <ScrollViewer Margin="0" x:Name="PART_ContentHost"/>
+                                </Border>
+                            </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+                
+                <!-- Set Font Size -->
+                <Setter Property="FontSize" Value="20"/>
+                
+                <!-- Optional: Padding for better spacing -->
+                <Setter Property="Padding" Value="5"/>
+            </Style>
+        </Grid.Resources>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+
+        <Label Content="1" Grid.Row="0" Grid.Column="0"/>
+        <Label Content="2" Grid.Row="0" Grid.Column="1"/>
+        <Label Content="3" Grid.Row="0" Grid.Column="2"/>
+        <Label Content="4" Grid.Row="0" Grid.Column="3"/>
+        <Label Content="5" Grid.Row="0" Grid.Column="4"/>
+        <Label Content="6" Grid.Row="0" Grid.Column="5"/>
+        <Label Content="7" Grid.Row="0" Grid.Column="6"/>
+        <Label Content="8" Grid.Row="0" Grid.Column="7"/>
+        <Label Content="9" Grid.Row="0" Grid.Column="8"/>
+        <Label Content="10" Grid.Row="0" Grid.Column="9"/>
+        <Label Content="11" Grid.Row="0" Grid.Column="10"/>
+        <Label Content="12" Grid.Row="0" Grid.Column="11"/>
+        <Label Content="13" Grid.Row="0" Grid.Column="12"/>
+        <Label Content="14" Grid.Row="0" Grid.Column="13"/>
+        <Label Content="15" Grid.Row="0" Grid.Column="14"/>
+        <Label Content="16" Grid.Row="0" Grid.Column="15"/>
+        <Label Content="17" Grid.Row="0" Grid.Column="16"/>
+        <Label Content="18" Grid.Row="0" Grid.Column="17"/>
+
+        <!-- Period 1 -->
+        <TextBox Tag="1" Grid.Row="1" Grid.Column="0" /> 
+        <TextBox  Tag="2" Grid.Row="1" Grid.Column="17" />
+        
+        <!-- Period 2 -->
+        <TextBox  Tag="3" Grid.Row="2" Grid.Column="0" />
+        <TextBox  Tag="4" Grid.Row="2" Grid.Column="1" />
+        <TextBox Tag="5" Grid.Row="2" Grid.Column="12" />
+        <TextBox Tag="6" Grid.Row="2" Grid.Column="13" />
+        <TextBox Tag="7" Grid.Row="2" Grid.Column="14" />
+        <TextBox Tag="8" Grid.Row="2" Grid.Column="15" />
+        <TextBox Tag="9" Grid.Row="2" Grid.Column="16" />
+        <TextBox  Tag="10" Grid.Row="2" Grid.Column="17" />
+        
+        <!-- Period 3 -->
+        <TextBox  Tag="11" Grid.Row="3" Grid.Column="0" />
+        <TextBox  Tag="12" Grid.Row="3" Grid.Column="1" />
+        <TextBox  Tag="13" Grid.Row="3" Grid.Column="12" />
+        <TextBox  Tag="14" Grid.Row="3" Grid.Column="13" />
+        <TextBox Tag="15" Grid.Row="3" Grid.Column="14" />
+        <TextBox Tag="16" Grid.Row="3" Grid.Column="15" />
+        <TextBox  Tag="17" Grid.Row="3" Grid.Column="16" />
+        <TextBox  Tag="18" Grid.Row="3" Grid.Column="17" />
+        
+        <!-- Period 4 -->
+        <TextBox Tag="19" Grid.Row="4" Grid.Column="0" />
+        <TextBox  Tag="20" Grid.Row="4" Grid.Column="1" />
+        <TextBox  Tag="21" Grid.Row="4" Grid.Column="2" />
+        <TextBox  Tag="22" Grid.Row="4" Grid.Column="3" />
+        <TextBox Tag="23" Grid.Row="4" Grid.Column="4" />
+        <TextBox  Tag="24" Grid.Row="4" Grid.Column="5" />
+        <TextBox  Tag="25" Grid.Row="4" Grid.Column="6" />
+        <TextBox  Tag="26" Grid.Row="4" Grid.Column="7" />
+        <TextBox  Tag="27" Grid.Row="4" Grid.Column="8" />
+        <TextBox  Tag="28" Grid.Row="4" Grid.Column="9" />
+        <TextBox  Tag="29" Grid.Row="4" Grid.Column="10" />
+        <TextBox  Tag="30" Grid.Row="4" Grid.Column="11" />
+        <TextBox  Tag="31" Grid.Row="4" Grid.Column="12" />
+        <TextBox  Tag="32" Grid.Row="4" Grid.Column="13" />
+        <TextBox  Tag="33" Grid.Row="4" Grid.Column="14" />
+        <TextBox  Tag="34" Grid.Row="4" Grid.Column="15" />
+        <TextBox  Tag="35" Grid.Row="4" Grid.Column="16" />
+        <TextBox  Tag="36" Grid.Row="4" Grid.Column="17" />
+        
+        <!-- Period 5 -->
+        <TextBox  Tag="37" Grid.Row="5" Grid.Column="0" />
+        <TextBox  Tag="38" Grid.Row="5" Grid.Column="1" />
+        <TextBox Tag="39" Grid.Row="5" Grid.Column="2" />
+        <TextBox  Tag="40" Grid.Row="5" Grid.Column="3" />
+        <TextBox  Tag="41" Grid.Row="5" Grid.Column="4" />
+        <TextBox  Tag="42" Grid.Row="5" Grid.Column="5" />
+        <TextBox  Tag="43" Grid.Row="5" Grid.Column="6" />
+        <TextBox  Tag="44" Grid.Row="5" Grid.Column="7" />
+        <TextBox  Tag="45" Grid.Row="5" Grid.Column="8" />
+        <TextBox  Tag="46" Grid.Row="5" Grid.Column="9" />
+        <TextBox  Tag="47" Grid.Row="5" Grid.Column="10" />
+        <TextBox  Tag="48" Grid.Row="5" Grid.Column="11" />
+        <TextBox  Tag="49" Grid.Row="5" Grid.Column="12" />
+        <TextBox  Tag="50" Grid.Row="5" Grid.Column="13" />
+        <TextBox  Tag="51" Grid.Row="5" Grid.Column="14" />
+        <TextBox  Tag="52" Grid.Row="5" Grid.Column="15" />
+        <TextBox Tag="53" Grid.Row="5" Grid.Column="16" />
+        <TextBox  Tag="54" Grid.Row="5" Grid.Column="17" />
+        
+        <!-- Period 6 -->
+        <TextBox  Tag="55" Grid.Row="6" Grid.Column="0" />
+        <TextBox  Tag="56" Grid.Row="6" Grid.Column="1" />
+        <TextBox  Tag="57" Grid.Row="6" Grid.Column="2" />
+        <!-- <TextBox  Tag="58" Grid.Row="6" Grid.Column="3" />
+        <TextBox  Tag="59" Grid.Row="6" Grid.Column="4" />
+        <TextBox  Tag="60" Grid.Row="6" Grid.Column="5" />
+        <TextBox  Tag="61" Grid.Row="6" Grid.Column="6" />
+        <TextBox  Tag="62" Grid.Row="6" Grid.Column="7" />
+        <TextBox  Tag="63" Grid.Row="6" Grid.Column="8" /> -->
+        <TextBox Tag="72" Grid.Row="6" Grid.Column="3" />
+        <TextBox Tag="73" Grid.Row="6" Grid.Column="4" />
+        <TextBox Tag="74" Grid.Row="6" Grid.Column="5" />
+        <TextBox Tag="75" Grid.Row="6" Grid.Column="6" />
+        <TextBox Tag="76" Grid.Row="6" Grid.Column="7" />
+        <TextBox Tag="77" Grid.Row="6" Grid.Column="8" />
+        <TextBox Tag="78" Grid.Row="6" Grid.Column="9" />
+        <TextBox Tag="79" Grid.Row="6" Grid.Column="10" />
+        <TextBox Tag="80" Grid.Row="6" Grid.Column="11" />
+        <TextBox Tag="81" Grid.Row="6" Grid.Column="12" />
+        <TextBox Tag="82" Grid.Row="6" Grid.Column="13" />
+        <TextBox Tag="83" Grid.Row="6" Grid.Column="14" />
+        <TextBox Tag="84" Grid.Row="6" Grid.Column="15" />
+        <TextBox Tag="85" Grid.Row="6" Grid.Column="16" />
+        <TextBox Tag="86" Grid.Row="6" Grid.Column="17" />
+        
+        <!-- Period 7 -->
+        <TextBox  Tag="87" Grid.Row="7" Grid.Column="0" />
+        <TextBox  Tag="88" Grid.Row="7" Grid.Column="1" />
+        <!-- <TextBox  Tag="89" Grid.Row="7" Grid.Column="2" />
+        <TextBox  Tag="90" Grid.Row="7" Grid.Column="3" />
+        <TextBox Tag="91" Grid.Row="7" Grid.Column="5" />
+        <TextBox  Tag="92" Grid.Row="7" Grid.Column="6" />
+        <TextBox  Tag="93" Grid.Row="7" Grid.Column="7" />
+        <TextBox  Tag="94" Grid.Row="7" Grid.Column="8" />
+        <TextBox  Tag="95" Grid.Row="7" Grid.Column="9" />
+        <TextBox  Tag="96" Grid.Row="7" Grid.Column="10" />
+        <TextBox  Tag="97" Grid.Row="7" Grid.Column="11" />
+        <TextBox  Tag="98" Grid.Row="7" Grid.Column="12" />
+        <TextBox  Tag="99" Grid.Row="7" Grid.Column="13" />
+        <TextBox  Tag="100" Grid.Row="7" Grid.Column="14" />
+        <TextBox  Tag="101" Grid.Row="7" Grid.Column="15" />
+        <TextBox  Tag="102" Grid.Row="7" Grid.Column="16" /> -->
+        <TextBox Tag="89" Grid.Row="7" Grid.Column="2" />
+        <TextBox Tag="104" Grid.Row="7" Grid.Column="3" />
+        <TextBox Tag="105" Grid.Row="7" Grid.Column="4" />
+        <TextBox Tag="106" Grid.Row="7" Grid.Column="5" />
+        <TextBox Tag="107" Grid.Row="7" Grid.Column="6" />
+        <TextBox Tag="108" Grid.Row="7" Grid.Column="7" />
+        <TextBox Tag="109" Grid.Row="7" Grid.Column="8" />
+        <TextBox Tag="110" Grid.Row="7" Grid.Column="9" />
+        <TextBox Tag="111" Grid.Row="7" Grid.Column="10" />
+        <TextBox Tag="112" Grid.Row="7" Grid.Column="11" />
+        <TextBox Tag="113" Grid.Row="7" Grid.Column="12" />
+        <TextBox Tag="114" Grid.Row="7" Grid.Column="13" />
+        <TextBox Tag="115" Grid.Row="7" Grid.Column="14" />
+        <TextBox Tag="116" Grid.Row="7" Grid.Column="15" />
+        <TextBox Tag="117" Grid.Row="7" Grid.Column="16" />
+        <TextBox Tag="118" Grid.Row="7" Grid.Column="17" />
+
+        <Label Content="Lanthanoid" Width="165" FontSize="24" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3"/>
+
+        <TextBox  Tag="58" Grid.Row="8" Grid.Column="3" />
+        <TextBox  Tag="59" Grid.Row="8" Grid.Column="4" />
+        <TextBox  Tag="60" Grid.Row="8" Grid.Column="5" />
+        <TextBox  Tag="61" Grid.Row="8" Grid.Column="6" />
+        <TextBox  Tag="62" Grid.Row="8" Grid.Column="7" />
+        <TextBox  Tag="63" Grid.Row="8" Grid.Column="8" />
+        <TextBox  Tag="64" Grid.Row="8" Grid.Column="9" />
+        <TextBox  Tag="65" Grid.Row="8" Grid.Column="10" />
+        <TextBox  Tag="66" Grid.Row="8" Grid.Column="11" />
+        <TextBox  Tag="67" Grid.Row="8" Grid.Column="12" />
+        <TextBox  Tag="68" Grid.Row="8" Grid.Column="13" />
+        <TextBox  Tag="69" Grid.Row="8" Grid.Column="14" />
+        <TextBox  Tag="70" Grid.Row="8" Grid.Column="15" />
+        <TextBox  Tag="71" Grid.Row="8" Grid.Column="16" />
+
+        <Label Content="Actinoid" Width="165" FontSize="24" Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3"/>
+
+        <TextBox  Tag="90" Grid.Row="9" Grid.Column="3" />
+        <TextBox  Tag="91" Grid.Row="9" Grid.Column="4" />
+        <TextBox  Tag="92" Grid.Row="9" Grid.Column="5" />
+        <TextBox  Tag="93" Grid.Row="9" Grid.Column="6" />
+        <TextBox  Tag="94" Grid.Row="9" Grid.Column="7" />
+        <TextBox  Tag="95" Grid.Row="9" Grid.Column="8" />
+        <TextBox  Tag="96" Grid.Row="9" Grid.Column="9" />
+        <TextBox  Tag="97" Grid.Row="9" Grid.Column="10" />
+        <TextBox  Tag="98" Grid.Row="9" Grid.Column="11" />
+        <TextBox  Tag="99" Grid.Row="9" Grid.Column="12" />
+        <TextBox  Tag="100" Grid.Row="9" Grid.Column="13" />
+        <TextBox  Tag="101" Grid.Row="9" Grid.Column="14" />
+        <TextBox  Tag="102" Grid.Row="9" Grid.Column="15" />
+        <TextBox  Tag="103" Grid.Row="9" Grid.Column="16" />
+        
+
+
+    </Grid>
+    <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+    <StackPanel.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#4e8752"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="/Fonts/#Roboto"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="{DynamicResource PrimaryForeground}" Opacity="0.3" BlurRadius="8"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <!-- Hover Effect Overlay -->
+                            <Border x:Name="HoverOverlay" 
+                                    Background="Transparent" 
+                                    CornerRadius="20"/>
+                            
+                            <Border Background="{TemplateBinding Background}" 
+                                    CornerRadius="20" 
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </Grid>
+                        
+                        <ControlTemplate.Triggers>
+                            <!-- Hover Effect (Semi-transparent white overlay) -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="HoverOverlay" Property="Background" Value="#FFFFFF10"/>
+                                <Setter Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="Black" Opacity="0.4" BlurRadius="10"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            
+                            <!-- Pressed Effect (Darker Shade) -->
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#3a6f42"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </StackPanel.Resources>
+
+
+        <Button Name="SubmitButton" Grid.Row="7" Content="Submit"/>
+        <Button Name="RefreshButton" Grid.Row="7" Content="Refresh"/>
+            <CheckBox x:Name="cb1" FontSize="18" Foreground="{DynamicResource ForegroundBrush}" Margin="10" FontWeight="Bold" Padding="5" Visibility="Collapsed" Grid.Row="7" Checked="RevealAns" Unchecked="HandleUnchecked" VerticalContentAlignment="Center" VerticalAlignment="Center">Reveal Answer</CheckBox>
+    </StackPanel>
+    </Grid>
+    
+</Window>
